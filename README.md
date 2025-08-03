@@ -45,7 +45,8 @@ List<Integer> numbers= List.of( 41, 40, 35);
 StreamX2 <String,Integer> streamX2 = StreamX.of( "Alice", "Bob", "Charlie" ).with( numbers ); 
    //♻️ Dynamic Expansion To Support New Type!!♻️
 streamX2.filter( (index, v1, v2 ) -> v1.contains( "a" ) && v2 < 40)
-        .forEach( (index, v1, v2 ) ->System.out.println( "found :"+ index +", name = "+v1+", age = "+ v2 ));
+        .forEach( (index, v1, v2 ) ->System.out.println( "found :"+ index +", name = "+v1
+        +", age = "+ v2 ));
 ```
 
 
@@ -60,7 +61,8 @@ List<String> names= List.of("Jessica", "Bob", "Charlie");
 List<Integer> ages = List.of( 41, 40, 35);
 List<Boolean> Online= List.of(false, true, true);
         StreamX.from(names,ages ,Online).forEach( ( index, v1, v2, v3 ) ->
-        System.out.println( (index+1) + ": " + v1 + " is " + v2 + " years old, with an online status " + v3 +".") );
+        System.out.println( (index+1) + ": " + v1 + " is " + v2 +
+        " years old, with an online status " + v3 +".") );
  
 // (2)Constructing Via Adding Varargs Or Adding A List
 
