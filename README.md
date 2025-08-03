@@ -23,7 +23,6 @@
 
 ### Implicitly
 
-```java
 List<Button> buttons = StreamX.of("OK", "Cancel", "Open", "Save", "Close", "Edit")
     .and(Color.RED, Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.MAGENTA)
     .map((i, text, color) -> {
@@ -32,19 +31,17 @@ List<Button> buttons = StreamX.of("OK", "Cancel", "Open", "Save", "Close", "Edit
         return b;
         // 🔒 Type-safe: all values are guaranteed to match types at compile-time 🔒
     });
-```
 
-```java
+
 StreamX.of("A", "B", "C").and(10, 20, 30).and(true, false, true)
     .forEach((i, str, num, flag) ->
         System.out.println(i + ": " + str + ", " + num + ", " + flag)
-        // ✅ Type-checked: no casting needed, fully generic ✅
+        //  Type-checked: no casting needed, fully generic 
     );
-```
+
 
 ### Explicitly
 
-```java
 List<Integer> numbers = List.of(41, 40, 35);
 StreamX2<String, Integer> streamX2 = StreamX.of("Alice", "Bob", "Charlie").with(numbers);
 // ♻️ Dynamic Expansion To Support New Type!! ♻️
@@ -52,13 +49,12 @@ streamX2.filter((index, v1, v2) -> v1.contains("a") && v2 < 40)
     .forEach((index, v1, v2) ->
         System.out.println("found: " + index + ", name = " + v1 + ", age = " + v2)
     );
-```
+
 
 ---
 
 ## 🧪 Factory Methods
 
-```java
 
 List<String> names = List.of("Jessica", "Bob", "Charlie");
 List<Integer> ages = List.of(41, 40, 35);
@@ -81,13 +77,12 @@ StreamX.of("A", "B", "C").and(1, 2, 3).with(nums).forEach(
 ScrollPane scrollPane = new ScrollPane();
 StreamX.generateStartingListBasedOnIndex(5, index -> new Button("My button number " + index))
     .forEach((index, button) -> scrollPane.add(button));
-```
+
 
 ---
 
 ## 🧪 Constructor
 
-```java
 // Constructing Via Lists
 
 List<String> names = List.of("Alice", "Bob", "Charlie");
@@ -98,7 +93,7 @@ StreamX3<String, Integer, Boolean> streamX3 = new StreamX3<>(names, ages, active
 streamX3.forEach((i, name, age, isActive) -> {
     System.out.println(i + ": " + name + " (" + age + ") - active: " + isActive);
 });
-```
+
 
 ---
 
