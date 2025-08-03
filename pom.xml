@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.mekkiseghier</groupId>
+    <artifactId>streamx</artifactId>
+    <version>0.1.0</version>
+    <name>StreamX</name>
+    <description>Java utility for parallel list streaming with index awareness</description>
+    <url>https://github.com/mekkiseghier/streamx</url>
+    <dependencies>
+    <dependency>
+        <groupId>com.github.mekkiseghier</groupId>
+        <artifactId>streamx</artifactId>
+        <version>0.1.0</version>
+    </dependency>
+    </dependencies>
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>mekkiseghier</id>
+            <name>Mekki Seghier</name>
+        </developer>
+    </developers>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+</project>
