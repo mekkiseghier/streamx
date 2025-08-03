@@ -155,6 +155,7 @@ public static final f.d4 dragForce = (rho, v, A, Cd) -> 0.5 * rho * v * v * A * 
 To be published soon. Add this to your `pom.xml` when ready:
 
 ```xml
+<root>
 <repositories>
   <repository>
     <id>jitpack.io</id>
@@ -167,6 +168,7 @@ To be published soon. Add this to your `pom.xml` when ready:
   <artifactId>streamx</artifactId>
   <version>1.0.0</version>
 </dependency>
+</root>
 ```
 
 ---
