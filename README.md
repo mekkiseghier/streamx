@@ -166,7 +166,7 @@ To be published soon. Add this to your `pom.xml` when ready:
 <dependency>
   <groupId>com.github.mekkiseghier</groupId>
   <artifactId>streamx</artifactId>
-  <version>1.0.0</version>
+  <version>0.1.1</version>
 </dependency>
 </root>
 ```
