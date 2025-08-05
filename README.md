@@ -208,7 +208,7 @@ Add this to your `pom.xml` :
 <dependency>
   <groupId>com.github.mekkiseghier</groupId>
   <artifactId>streamx</artifactId>
-  <version>v1.0.1</version>
+  <version>v1.0.2</version>
 </dependency>
 
 ```
@@ -224,7 +224,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.mekkiseghier:streamx:v1.0.1'
+  implementation 'com.github.mekkiseghier:streamx:v1.0.2'
 }
 ```
 ---
