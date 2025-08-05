@@ -9,6 +9,52 @@ import com.github.mekkiseghier.streamx.tuples.Tuple17;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A type-safe stream-like utility for working with 17 parallel lists of values.
+ * <p>
+ * {@code StreamX17} enables index-aware, type-safe, and readable iteration over 17 lists in parallel.
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
+ * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * </p>
+
+ * <p>
+ * Each operation enforces size equality across all lists at runtime,
+ * ensuring consistency of the parallel stream.
+ * </p>
+
+ * <p>
+ * Example usage:
+ * </p>
+ *
+ * <pre>{@code
+ * StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> stream =
+ *     StreamX.addLists(list1, list2, list3, list4, list5, list6, list7, list8, list9, list10, list11, list12, list13, list14, list15, list16, list17);
+ *
+ * stream.forEach((i, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17) -> {
+ *     System.out.println(i + ": " + v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5 + ", " + v6 + ", " + v7 + ", " + v8 + ", " + v9 + ", " + v10 + ", " + v11 + ", " + v12 + ", " + v13 + ", " + v14 + ", " + v15 + ", " + v16 + ", " + v17");
+ * });
+ * }</pre>
+
+ * @param <T1> the type of elements in list 1
+ * @param <T2> the type of elements in list 2
+ * @param <T3> the type of elements in list 3
+ * @param <T4> the type of elements in list 4
+ * @param <T5> the type of elements in list 5
+ * @param <T6> the type of elements in list 6
+ * @param <T7> the type of elements in list 7
+ * @param <T8> the type of elements in list 8
+ * @param <T9> the type of elements in list 9
+ * @param <T10> the type of elements in list 10
+ * @param <T11> the type of elements in list 11
+ * @param <T12> the type of elements in list 12
+ * @param <T13> the type of elements in list 13
+ * @param <T14> the type of elements in list 14
+ * @param <T15> the type of elements in list 15
+ * @param <T16> the type of elements in list 16
+ * @param <T17> the type of elements in list 17
+ * @see com.github.mekkiseghier.streamx.StreamX
+ */
+
 public class StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> {
     private final List<T1> list1;
     private final List<T2> list2;
@@ -67,26 +113,87 @@ public class StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T
         this.size = expectedSize;
     }
 
-     @SafeVarargs    public final <T18> StreamX18 <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> and( T18... values) {
+    /**
+     * Adds a new array of elements to this {@link StreamX17}, producing a {@link StreamX18}
+     * that enables parallel index-aware iteration over 18 sequences.
+     *
+     * <p>The number of provided elements must match the size of the existing lists to
+     * maintain index alignment.</p>
+     *
+     * <pre>{@code
+     * streamX17.addElements(v1, v2, v3)
+     *        .forEach((i, ...) -> { ... });
+     * }</pre>
+     *
+     * @param values the array of new elements to include
+     * @param <T18> the type of the new elements
+     * @return a {@code StreamX18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>} representing the parallel lists
+     * @throws IllegalArgumentException if the number of elements does not match the existing size
+     */
+     @SafeVarargs    public final <T18> StreamX18 <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> addElements( T18... values) {
         if (values.length != size) throw new IllegalArgumentException("List size mismatch");
         List<T18> safeList =new ArrayList<>(values.length);
         for (T18 item :  List.of(values) ) safeList.add(item);
         return new StreamX18 <>(list1, list2, list3, list4, list5, list6, list7, list8, list9, list10, list11, list12, list13, list14, list15, list16, list17, safeList);
     }
 
-    public < T18> StreamX18 <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> with(List <? extends T18 > list) {
-        if (list.size() != size) throw new IllegalArgumentException("List size mismatch");
-        List<T18> safeList = new ArrayList<>(list.size());
-        for (T18 item : list) safeList.add(item);
-        return new StreamX18 <>(list1, list2, list3, list4, list5, list6, list7, list8, list9, list10, list11, list12, list13, list14, list15, list16, list17, safeList);
+
+    /**
+     * Adds a new list to this {@link StreamX17}, producing a {@link StreamX18} that enables
+     * parallel index-aware iteration over 18 lists.
+     *
+     * <p>All lists must have the same size to maintain index alignment.</p>
+     *
+     * <pre>{@code
+     * streamX17.addList(list18)
+     *        .forEach((i, ...) -> { ... });
+     * }</pre>
+     *
+     * @param list the new list to include in the stream
+     * @param <T18> the type of elements in the new list
+     * @return a {@code StreamX18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>} representing the parallel lists
+     * @throws IllegalArgumentException if the provided list size does not match existing lists
+     */
+    public <T18> StreamX18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> addList(List<T18> list) {
+        if (list.size() != size) {
+            throw new IllegalArgumentException("List size mismatch");
+        }
+        return new StreamX18<>(list1, list2, list3, list4, list5, list6, list7, list8, list9, list10, list11, list12, list13, list14, list15, list16, list17, list);
     }
 
+
+
+    /**
+     * Performs the given action on each set of elements in parallel across 17 lists.
+     * The index and corresponding elements are passed to the provided action.
+     *
+     * <pre>{@code
+     * streamX17.forEach((i, a1, ..., a17) -> {
+     *     // use i, a1, ..., a17
+     * });
+     * }</pre>
+     *
+     * @param action a lambda that receives the index and the 17 elements at that index
+     */
     public void forEach(Consumer17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> action) {
         for (int i = 0; i < size; i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i));
         }
     }
 
+    /**
+     * Maps each indexed group of 17 elements into a new result using the provided mapper.
+     *
+     * <pre>{@code
+     * List<R> results = streamX17.map((i, a1, ..., a17) -> {
+     *     return ...; // return type R
+     * });
+     * }</pre>
+     *
+     * @param mapper a function that receives the index and 17 elements, and returns a result
+     * @param <R> the result type of the mapping function
+     * @return a list of mapped results
+     */
     public <R> List<R> map(Function17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, R> mapper) {
         List<R> results = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -94,7 +201,17 @@ public class StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T
         }
         return results;
     }
-
+    /**
+     * Filters elements based on a predicate applied to the indexed values.
+     * Only entries for which the predicate returns true will remain.
+     *
+     * <pre>{@code
+     * streamX17.filter((i, a1, ..., a17) -> condition)
+     * }</pre>
+     *
+     * @param predicate the predicate to test each element group
+     * @return a new {@code StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>} with filtered elements
+     */
     public StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> filter(Predicate17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> predicate) {
         List<T1> filtered1 = new ArrayList<>();
         List<T2> filtered2 = new ArrayList<>();
@@ -136,7 +253,18 @@ public class StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T
         }
         return new StreamX17<>(filtered1, filtered2, filtered3, filtered4, filtered5, filtered6, filtered7, filtered8, filtered9, filtered10, filtered11, filtered12, filtered13, filtered14, filtered15, filtered16, filtered17);
     }
-
+    /**
+     * Reduces all elements into a single result using the given accumulator function.
+     *
+     * <pre>{@code
+     * R result = streamX17.reduce(initialValue, (acc, i, a1, ..., a17) -> ...);
+     * }</pre>
+     *
+     * @param identity the initial accumulator value
+     * @param accumulator the function to apply to each indexed group and the accumulator
+     * @param <R> the result type of the reduction
+     * @return the reduced result
+     */
     public <R> R reduce(R identity, Accumulator17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, R> accumulator) {
         R result = identity;
         for (int i = 0; i < size; i++) {
@@ -145,32 +273,70 @@ public class StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T
         return result;
     }
 
+
+    /**
+     * Converts this stream into a list of {@code Tuple17} objects,
+     * each containing the index and corresponding elements from all lists.
+     * <p>
+     * Useful for exporting the stream as immutable indexed tuples.
+     * </p>
+     *
+     * @return a list of {@code Tuple17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>} entries.
+     */
     public List<Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>> asTupleList() {
         List<Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            result.add(new Tuple17<>(i,list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i)));
+            result.add(new Tuple17<>(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i)));
         }
         return result;
     }
+
+    /**
+     * Checks whether all indexed element groups match the given predicate.
+     *
+     * @param predicate the predicate to apply to each element group and index
+     * @return true if all match, false otherwise
+     */
     public boolean allMatch(Predicate17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> predicate) {
-        for (int i = 0; i < size; i++) {
-            if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i)) ) return false;
+        for (int i = 0; i < list1.size(); i++) {
+            if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i))) return false;
         }
         return true;
     }
 
+    /**
+     * Checks whether any indexed element group matches the given predicate.
+     *
+     * @param predicate the predicate to test each group
+     * @return true if any match, false otherwise
+     */
     public boolean anyMatch(Predicate17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> predicate) {
-        for (int i = 0; i < size; i++) {
-            if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i)) ) return true;
+        for (int i = 0; i < list1.size(); i++) {
+            if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i))) return true;
         }
         return false;
     }
-    public int size() { return size; }
 
+    /**
+     * Applies the given action to each indexed element group without modifying the stream.
+     *
+     * @param action the action to perform on each group
+     * @return this stream for further chaining
+     */
     public StreamX17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> peek(Consumer17<Integer, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> action) {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i), list9.get(i), list10.get(i), list11.get(i), list12.get(i), list13.get(i), list14.get(i), list15.get(i), list16.get(i), list17.get(i));
         }
         return this;
     }
+
+    /**
+     * @return the number of elements in the stream
+     */
+    public int size() {
+        return list1.size();
+    }
+
+
+
 }

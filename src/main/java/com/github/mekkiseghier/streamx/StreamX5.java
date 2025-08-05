@@ -9,6 +9,40 @@ import com.github.mekkiseghier.streamx.tuples.Tuple5;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A type-safe stream-like utility for working with 5 parallel lists of values.
+ * <p>
+ * {@code StreamX5} enables index-aware, type-safe, and readable iteration over 5 lists in parallel.
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
+ * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * </p>
+
+ * <p>
+ * Each operation enforces size equality across all lists at runtime,
+ * ensuring consistency of the parallel stream.
+ * </p>
+
+ * <p>
+ * Example usage:
+ * </p>
+ *
+ * <pre>{@code
+ * StreamX5<T1, T2, T3, T4, T5> stream =
+ *     StreamX.addLists(list1, list2, list3, list4, list5);
+ *
+ * stream.forEach((i, v1, v2, v3, v4, v5) -> {
+ *     System.out.println(i + ": " + v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5");
+ * });
+ * }</pre>
+
+ * @param <T1> the type of elements in list 1
+ * @param <T2> the type of elements in list 2
+ * @param <T3> the type of elements in list 3
+ * @param <T4> the type of elements in list 4
+ * @param <T5> the type of elements in list 5
+ * @see com.github.mekkiseghier.streamx.StreamX
+ */
+
 public class StreamX5<T1, T2, T3, T4, T5> {
     private final List<T1> list1;
     private final List<T2> list2;
@@ -31,26 +65,84 @@ public class StreamX5<T1, T2, T3, T4, T5> {
         this.size = expectedSize;
     }
 
-     @SafeVarargs    public final <T6> StreamX6 <T1, T2, T3, T4, T5, T6> and( T6... values) {
+    /**
+     * Adds a new array of elements to this {@link StreamX5}, producing a {@link StreamX6}
+     * that enables parallel index-aware iteration over 6 sequences.
+     *
+     * <p>The number of provided elements must match the size of the existing lists to
+     * maintain index alignment.</p>
+     *
+     * <pre>{@code
+     * streamX5.addElements(v1, v2, v3)
+     *        .forEach((i, ...) -> { ... });
+     * }</pre>
+     *
+     * @param values the array of new elements to include
+     * @param <T6> the type of the new elements
+     * @return a {@code StreamX6<T1, T2, T3, T4, T5, T6>} representing the parallel lists
+     * @throws IllegalArgumentException if the number of elements does not match the existing size
+     */
+     @SafeVarargs    public final <T6> StreamX6 <T1, T2, T3, T4, T5, T6> addElements( T6... values) {
         if (values.length != size) throw new IllegalArgumentException("List size mismatch");
         List<T6> safeList =new ArrayList<>(values.length);
         for (T6 item :  List.of(values) ) safeList.add(item);
         return new StreamX6 <>(list1, list2, list3, list4, list5, safeList);
     }
-
-    public < T6> StreamX6 <T1, T2, T3, T4, T5, T6> with(List <? extends T6 > list) {
-        if (list.size() != size) throw new IllegalArgumentException("List size mismatch");
-        List<T6> safeList = new ArrayList<>(list.size());
-        for (T6 item : list) safeList.add(item);
-        return new StreamX6 <>(list1, list2, list3, list4, list5, safeList);
+    /**
+     * Adds a new list to this {@link StreamX5}, producing a {@link StreamX6} that enables
+     * parallel index-aware iteration over 6 lists.
+     *
+     * <p>All lists must have the same size to maintain index alignment.</p>
+     *
+     * <pre>{@code
+     * streamX5.addList(list6)
+     *        .forEach((i, ...) -> { ... });
+     * }</pre>
+     *
+     * @param list the new list to include in the stream
+     * @param <T6> the type of elements in the new list
+     * @return a {@code StreamX6<T1, T2, T3, T4, T5, T6>} representing the parallel lists
+     * @throws IllegalArgumentException if the provided list size does not match existing lists
+     */
+    public <T6> StreamX6<T1, T2, T3, T4, T5, T6> addList(List<T6> list) {
+        if (list.size() != size) {
+            throw new IllegalArgumentException("List size mismatch");
+        }
+        return new StreamX6<>(list1, list2, list3, list4, list5, list);
     }
 
+
+    /**
+     * Performs the given action on each set of elements in parallel across 5 lists.
+     * The index and corresponding elements are passed to the provided action.
+     *
+     * <pre>{@code
+     * streamX5.forEach((i, a1, ..., a5) -> {
+     *     // use i, a1, ..., a5
+     * });
+     * }</pre>
+     *
+     * @param action a lambda that receives the index and the 5 elements at that index
+     */
     public void forEach(Consumer5<Integer, T1, T2, T3, T4, T5> action) {
         for (int i = 0; i < size; i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i));
         }
     }
 
+    /**
+     * Maps each indexed group of 5 elements into a new result using the provided mapper.
+     *
+     * <pre>{@code
+     * List<R> results = streamX5.map((i, a1, ..., a5) -> {
+     *     return ...; // return type R
+     * });
+     * }</pre>
+     *
+     * @param mapper a function that receives the index and 5 elements, and returns a result
+     * @param <R> the result type of the mapping function
+     * @return a list of mapped results
+     */
     public <R> List<R> map(Function5<Integer, T1, T2, T3, T4, T5, R> mapper) {
         List<R> results = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -58,7 +150,17 @@ public class StreamX5<T1, T2, T3, T4, T5> {
         }
         return results;
     }
-
+    /**
+     * Filters elements based on a predicate applied to the indexed values.
+     * Only entries for which the predicate returns true will remain.
+     *
+     * <pre>{@code
+     * streamX5.filter((i, a1, ..., a5) -> condition)
+     * }</pre>
+     *
+     * @param predicate the predicate to test each element group
+     * @return a new {@code StreamX5<T1, T2, T3, T4, T5>} with filtered elements
+     */
     public StreamX5<T1, T2, T3, T4, T5> filter(Predicate5<Integer, T1, T2, T3, T4, T5> predicate) {
         List<T1> filtered1 = new ArrayList<>();
         List<T2> filtered2 = new ArrayList<>();
@@ -76,7 +178,18 @@ public class StreamX5<T1, T2, T3, T4, T5> {
         }
         return new StreamX5<>(filtered1, filtered2, filtered3, filtered4, filtered5);
     }
-
+    /**
+     * Reduces all elements into a single result using the given accumulator function.
+     *
+     * <pre>{@code
+     * R result = streamX5.reduce(initialValue, (acc, i, a1, ..., a5) -> ...);
+     * }</pre>
+     *
+     * @param identity the initial accumulator value
+     * @param accumulator the function to apply to each indexed group and the accumulator
+     * @param <R> the result type of the reduction
+     * @return the reduced result
+     */
     public <R> R reduce(R identity, Accumulator5<Integer, T1, T2, T3, T4, T5, R> accumulator) {
         R result = identity;
         for (int i = 0; i < size; i++) {
@@ -85,32 +198,68 @@ public class StreamX5<T1, T2, T3, T4, T5> {
         return result;
     }
 
+
+    /**
+     * Converts this stream into a list of {@code Tuple5} objects,
+     * each containing the index and corresponding elements from all lists.
+     * <p>
+     * Useful for exporting the stream as immutable indexed tuples.
+     * </p>
+     *
+     * @return a list of {@code Tuple5<Integer, T1, T2, T3, T4, T5>} entries.
+     */
     public List<Tuple5<T1, T2, T3, T4, T5>> asTupleList() {
         List<Tuple5<T1, T2, T3, T4, T5>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            result.add(new Tuple5<>(i,list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i)));
+            result.add(new Tuple5<>(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i)));
         }
         return result;
     }
+
+    /**
+     * Checks whether all indexed element groups match the given predicate.
+     *
+     * @param predicate the predicate to apply to each element group and index
+     * @return true if all match, false otherwise
+     */
     public boolean allMatch(Predicate5<Integer, T1, T2, T3, T4, T5> predicate) {
-        for (int i = 0; i < size; i++) {
-            if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i)) ) return false;
+        for (int i = 0; i < list1.size(); i++) {
+            if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i))) return false;
         }
         return true;
     }
 
+    /**
+     * Checks whether any indexed element group matches the given predicate.
+     *
+     * @param predicate the predicate to test each group
+     * @return true if any match, false otherwise
+     */
     public boolean anyMatch(Predicate5<Integer, T1, T2, T3, T4, T5> predicate) {
-        for (int i = 0; i < size; i++) {
-            if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i)) ) return true;
+        for (int i = 0; i < list1.size(); i++) {
+            if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i))) return true;
         }
         return false;
     }
-    public int size() { return size; }
 
+    /**
+     * Applies the given action to each indexed element group without modifying the stream.
+     *
+     * @param action the action to perform on each group
+     * @return this stream for further chaining
+     */
     public StreamX5<T1, T2, T3, T4, T5> peek(Consumer5<Integer, T1, T2, T3, T4, T5> action) {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i));
         }
         return this;
     }
+
+    /**
+     * @return the number of elements in the stream
+     */
+    public int size() {
+        return list1.size();
+    }
+
 }

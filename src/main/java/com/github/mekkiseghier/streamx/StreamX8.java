@@ -9,6 +9,45 @@ import com.github.mekkiseghier.streamx.tuples.Tuple8;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * A type-safe stream-like utility for working with 8 parallel lists of values.
+ * <p>
+ * {@code StreamX8} enables index-aware, type-safe, and readable iteration over 8 lists in parallel.
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
+ * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * </p>
+
+ * <p>
+ * Each operation enforces size equality across all lists at runtime,
+ * ensuring consistency of the parallel stream.
+ * </p>
+
+ * <p>
+ * Example usage:
+ * </p>
+ *
+ * <pre>{@code
+ * StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> stream =
+ *     StreamX.addLists(list1, list2, list3, list4, list5, list6, list7, list8);
+ *
+ * stream.forEach((i, v1, v2, v3, v4, v5, v6, v7, v8) -> {
+ *     System.out.println(i + ": " + v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5 + ", " + v6 + ", " + v7 + ", " + v8");
+ * });
+ * }</pre>
+
+ * @param <T1> the type of elements in list 1
+ * @param <T2> the type of elements in list 2
+ * @param <T3> the type of elements in list 3
+ * @param <T4> the type of elements in list 4
+ * @param <T5> the type of elements in list 5
+ * @param <T6> the type of elements in list 6
+ * @param <T7> the type of elements in list 7
+ * @param <T8> the type of elements in list 8
+ * @see com.github.mekkiseghier.streamx.StreamX
+ */
+
+
 public class StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> {
     private final List<T1> list1;
     private final List<T2> list2;
@@ -39,27 +78,84 @@ public class StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> {
         this.list8 = list8;
         this.size = expectedSize;
     }
-
-     @SafeVarargs    public final <T9> StreamX9 <T1, T2, T3, T4, T5, T6, T7, T8, T9> and( T9... values) {
+    /**
+     * Adds a new array of elements to this {@link StreamX8}, producing a {@link StreamX9}
+     * that enables parallel index-aware iteration over 9 sequences.
+     *
+     * <p>The number of provided elements must match the size of the existing lists to
+     * maintain index alignment.</p>
+     *
+     * <pre>{@code
+     * streamX8.addElements(v1, v2, v3)
+     *        .forEach((i, ...) -> { ... });
+     * }</pre>
+     *
+     * @param values the array of new elements to include
+     * @param <T9> the type of the new elements
+     * @return a {@code StreamX9<T1, T2, T3, T4, T5, T6, T7, T8, T9>} representing the parallel lists
+     * @throws IllegalArgumentException if the number of elements does not match the existing size
+     */
+     @SafeVarargs    public final <T9> StreamX9 <T1, T2, T3, T4, T5, T6, T7, T8, T9> addElements( T9... values) {
         if (values.length != size) throw new IllegalArgumentException("List size mismatch");
         List<T9> safeList =new ArrayList<>(values.length);
         for (T9 item :  List.of(values) ) safeList.add(item);
         return new StreamX9 <>(list1, list2, list3, list4, list5, list6, list7, list8, safeList);
     }
 
-    public < T9> StreamX9 <T1, T2, T3, T4, T5, T6, T7, T8, T9> with(List <? extends T9 > list) {
-        if (list.size() != size) throw new IllegalArgumentException("List size mismatch");
-        List<T9> safeList = new ArrayList<>(list.size());
-        for (T9 item : list) safeList.add(item);
-        return new StreamX9 <>(list1, list2, list3, list4, list5, list6, list7, list8, safeList);
+    /**
+     * Adds a new list to this {@link StreamX8}, producing a {@link StreamX9} that enables
+     * parallel index-aware iteration over 9 lists.
+     *
+     * <p>All lists must have the same size to maintain index alignment.</p>
+     *
+     * <pre>{@code
+     * streamX8.addList(list9)
+     *        .forEach((i, ...) -> { ... });
+     * }</pre>
+     *
+     * @param list the new list to include in the stream
+     * @param <T9> the type of elements in the new list
+     * @return a {@code StreamX9<T1, T2, T3, T4, T5, T6, T7, T8, T9>} representing the parallel lists
+     * @throws IllegalArgumentException if the provided list size does not match existing lists
+     */
+    public <T9> StreamX9<T1, T2, T3, T4, T5, T6, T7, T8, T9> addList(List<T9> list) {
+        if (list.size() != size) {
+            throw new IllegalArgumentException("List size mismatch");
+        }
+        return new StreamX9<>(list1, list2, list3, list4, list5, list6, list7, list8, list);
     }
 
+    /**
+     * Performs the given action on each set of elements in parallel across 8 lists.
+     * The index and corresponding elements are passed to the provided action.
+     *
+     * <pre>{@code
+     * streamX8.forEach((i, a1, ..., a8) -> {
+     *     // use i, a1, ..., a8
+     * });
+     * }</pre>
+     *
+     * @param action a lambda that receives the index and the 8 elements at that index
+     */
     public void forEach(Consumer8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> action) {
         for (int i = 0; i < size; i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i));
         }
     }
 
+    /**
+     * Maps each indexed group of 8 elements into a new result using the provided mapper.
+     *
+     * <pre>{@code
+     * List<R> results = streamX8.map((i, a1, ..., a8) -> {
+     *     return ...; // return type R
+     * });
+     * }</pre>
+     *
+     * @param mapper a function that receives the index and 8 elements, and returns a result
+     * @param <R> the result type of the mapping function
+     * @return a list of mapped results
+     */
     public <R> List<R> map(Function8<Integer, T1, T2, T3, T4, T5, T6, T7, T8, R> mapper) {
         List<R> results = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -67,6 +163,19 @@ public class StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> {
         }
         return results;
     }
+
+
+    /**
+     * Filters elements based on a predicate applied to the indexed values.
+     * Only entries for which the predicate returns true will remain.
+     *
+     * <pre>{@code
+     * streamX8.filter((i, a1, ..., a8) -> condition)
+     * }</pre>
+     *
+     * @param predicate the predicate to test each element group
+     * @return a new {@code StreamX8<T1, T2, T3, T4, T5, T6, T7, T8>} with filtered elements
+     */
 
     public StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> filter(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
         List<T1> filtered1 = new ArrayList<>();
@@ -91,7 +200,18 @@ public class StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> {
         }
         return new StreamX8<>(filtered1, filtered2, filtered3, filtered4, filtered5, filtered6, filtered7, filtered8);
     }
-
+    /**
+     * Reduces all elements into a single result using the given accumulator function.
+     *
+     * <pre>{@code
+     * R result = streamX8.reduce(initialValue, (acc, i, a1, ..., a8) -> ...);
+     * }</pre>
+     *
+     * @param identity the initial accumulator value
+     * @param accumulator the function to apply to each indexed group and the accumulator
+     * @param <R> the result type of the reduction
+     * @return the reduced result
+     */
     public <R> R reduce(R identity, Accumulator8<Integer, T1, T2, T3, T4, T5, T6, T7, T8, R> accumulator) {
         R result = identity;
         for (int i = 0; i < size; i++) {
@@ -100,32 +220,68 @@ public class StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> {
         return result;
     }
 
+
+    /**
+     * Converts this stream into a list of {@code Tuple8} objects,
+     * each containing the index and corresponding elements from all lists.
+     * <p>
+     * Useful for exporting the stream as immutable indexed tuples.
+     * </p>
+     *
+     * @return a list of {@code Tuple8<Integer, T1, T2, T3, T4, T5, T6, T7, T8>} entries.
+     */
     public List<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> asTupleList() {
         List<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            result.add(new Tuple8<>(i,list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i)));
+            result.add(new Tuple8<>(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i)));
         }
         return result;
     }
+    /**
+     * Checks whether all indexed element groups match the given predicate.
+     *
+     * @param predicate the predicate to apply to each element group and index
+     * @return true if all match, false otherwise
+     */
     public boolean allMatch(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
-        for (int i = 0; i < size; i++) {
-            if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i)) ) return false;
+        for (int i = 0; i < list1.size(); i++) {
+            if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i))) return false;
         }
         return true;
     }
 
+    /**
+     * Checks whether any indexed element group matches the given predicate.
+     *
+     * @param predicate the predicate to test each group
+     * @return true if any match, false otherwise
+     */
     public boolean anyMatch(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
-        for (int i = 0; i < size; i++) {
-            if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i)) ) return true;
+        for (int i = 0; i < list1.size(); i++) {
+            if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i))) return true;
         }
         return false;
     }
-    public int size() { return size; }
 
+    /**
+     * Applies the given action to each indexed element group without modifying the stream.
+     *
+     * @param action the action to perform on each group
+     * @return this stream for further chaining
+     */
     public StreamX8<T1, T2, T3, T4, T5, T6, T7, T8> peek(Consumer8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> action) {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i));
         }
         return this;
     }
+
+    /**
+     * @return the number of elements in the stream
+     */
+    public int size() {
+        return list1.size();
+    }
+
+
 }

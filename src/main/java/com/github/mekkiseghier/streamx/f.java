@@ -5,14 +5,14 @@ package com.github.mekkiseghier.streamx;
  * working with stateless computations of varying arities (1 to 8) over four common data types:
  * {@code double}, {@code int}, {@code String}, and {@code boolean}.
  *
- * <p>Each interface (e.g., {@code f3d}, {@code f2s}, {@code f5b}) represents a functional contract
+ * <p>Each interface (e.g., {@code d3}, {@code s2}, {@code b5}) represents a functional contract
  * that takes a fixed number of arguments of a specific type and returns a result of the same type.
  * These interfaces are useful for high-arity functional programming, DSL design,
  * functional evaluation engines, or any scenario where Java's standard functional interfaces are insufficient.
  *
  * <p>Example usage:
  * <pre>{@code
- *     F.f3d average = (v1, v2, v3) -> (v1 + v2 + v3) / 3;
+ *     f.d3 average = (v1, v2, v3) -> (v1 + v2 + v3) / 3;
  *     double result = average.apply(2.0, 4.0, 6.0); // 4.0
  * }</pre>
  *
