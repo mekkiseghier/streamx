@@ -35,11 +35,9 @@ List < Button > buttons = StreamX.addElements( "OK", "Cancel", "Open", "Save", "
             } );
 StreamX.
 
-addElements("A","B","C" )
-    .
+addElements("A","B","C" ).
 
-addElements(10,20,30 )
-    .
+addElements(10,20,30 ).
 
 addElements(true,false,true )
     .forEach((i, str, num, flag) ->
