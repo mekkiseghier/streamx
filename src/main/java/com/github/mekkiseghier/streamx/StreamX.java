@@ -32,9 +32,7 @@ import java.util.List;
  */
 
 public class StreamX {
-    public static void main( String[] args ) {
 
-    }
     /**
      * Creates a {@link StreamX1} from given values.
      *
