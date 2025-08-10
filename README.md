@@ -153,7 +153,7 @@ Add this to your `pom.xml` :
 <dependency>
 <groupId>com.github.mekkiseghier</groupId>
 <artifactId>zipper</artifactId>
-<version>v1.0.6</version>
+<version>v1.0.7</version>
 </dependency>
 
 ```
@@ -169,7 +169,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.mekkiseghier:zipper:v1.0.6'
+  implementation 'com.github.mekkiseghier:zipper:v1.0.7'
 }
 ```
 ---
