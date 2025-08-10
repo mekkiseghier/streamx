@@ -7,7 +7,7 @@
     <!-- Coordinates for JitPack -->
     <groupId>com.github.mekkiseghier</groupId>
     <artifactId>zipper</artifactId>
-    <version>v1.0.6</version>
+    <version>1.0.7</version>
     <packaging>jar</packaging>
 
     <name>Zipper</name>
