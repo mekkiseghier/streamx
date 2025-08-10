@@ -1,41 +1,57 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Coordinates for JitPack -->
     <groupId>com.github.mekkiseghier</groupId>
-    <artifactId>streamx</artifactId>
-    <version>0.1.0</version>
-    <name>StreamX</name>
-    <description>Java utility for parallel list streaming with index awareness</description>
-    <url>https://github.com/mekkiseghier/streamx</url>
+    <artifactId>zipper</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
 
+    <name>Zipper</name>
+    <description>Java Zipper: Type-safe, index-aware stream extension for parallel list iteration</description>
+    <url>https://github.com/mekkiseghier/zipper</url>
+
+    <!-- License -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- SCM info -->
+    <scm>
+        <url>https://github.com/mekkiseghier/zipper</url>
+        <connection>scm:git:git://github.com/mekkiseghier/zipper.git</connection>
+        <developerConnection>scm:git:ssh://github.com/mekkiseghier/zipper.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <id>mekkiseghier</id>
+            <name>Mekki Seghier</name>
+            <email>mekkiseghier1984@gmail.com</email>
+        </developer>
+    </developers>
+
+    <!-- Java version -->
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>10</source>
+                    <target>10</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    <licenses>
-        <license>
-            <name>The MIT License</name>
-            <url>https://opensource.org/licenses/MIT</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <id>mekkiseghier</id>
-            <name>Mekki Seghier</name>
-        </developer>
-    </developers>
-
 </project>
