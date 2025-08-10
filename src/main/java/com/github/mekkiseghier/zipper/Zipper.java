@@ -32,7 +32,13 @@ import java.util.List;
  */
 
 public class Zipper {
-
+    public static void main( String[] args ) {
+        Zipper.addElements("A","B","C" ).addElements(10,20,30 ).addElements(true,false,true )
+                .forEach((i, str, num, flag) ->
+                                System.out.println(i + ": " + str + ", " + num + ", " + flag)
+//  Type-checked, no casting required
+                );
+    }
 
     /**
      * Creates a {@link Zipper1} from given values.
