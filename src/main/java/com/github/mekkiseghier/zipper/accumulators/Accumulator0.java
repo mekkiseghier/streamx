@@ -1,25 +1,21 @@
 package com.github.mekkiseghier.zipper.accumulators;
 
 /**
- * Represents an operation that combines an index and 2 arguments into a single result.
+ * Represents an operation that combines an index into a single result.
  * This is a functional interface
- * whose functional method is {@link #reduce(Object, Object, Object)}.
+ * whose functional method is {@link #reduce(Object)}.
  *
  * @param <I> the type of the index (usually {@code Integer})
- * @param <T1> the type of the first argument
- * @param <T2> the type of the second argument
  * @param <R> the type of the result
  */
 @FunctionalInterface
-public interface Accumulator2<I, T1, T2, R> {
+public interface Accumulator0<I, R> {
 
     /**
      * Combines the provided arguments into a single result.
      *
      * @param index the index position in the iteration
-     * @param v1 the first argument
-     * @param v2 the second argument
      * @return the result of combining the arguments
      */
-    R reduce(I index, T1 v1, T2 v2);
+    R reduce(I index);
 }

@@ -14,8 +14,8 @@ import java.util.List;
  * A type-safe stream-like utility for working with 3 parallel lists of values.
  * <p>
  * {@code Zipper3} enables index-aware, type-safe, and readable iteration over 3 lists in parallel.
- * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
- * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code zipList},
+ * and {@code zip}, while maintaining element alignment based on their positions (0-based index).
  * </p>
 
  * <p>
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * <pre>{@code
  * Zipper3<T1, T2, T3> stream =
- *     Zipper.addLists(list1, list2, list3);
+ *     Zipper.zipLists(list1, list2, list3);
  *
  * stream.forEach((i, v1, v2, v3) -> {
  *     System.out.println(i + ": " + v1 + ", " + v2 + ", " + v3");
@@ -67,7 +67,7 @@ public class Zipper3<T1, T2, T3> {
      * maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX3.addElements(v1, v2, v3)
+     * streamX3.zip(v1, v2, v3)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -76,7 +76,7 @@ public class Zipper3<T1, T2, T3> {
      * @return a {@code Zipper4<T1, T2, T3, T4>} representing the parallel lists
      * @throws IllegalArgumentException if the number of elements does not match the existing size
      */
-     @SafeVarargs    public final <T4> Zipper4 <T1, T2, T3, T4> addElements( T4... values) {
+     @SafeVarargs    public final <T4> Zipper4 <T1, T2, T3, T4> zip4( T4... values) {
         if (values.length != size) throw new IllegalArgumentException("List size mismatch");
         List<T4> safeList =new ArrayList<>(values.length);
         for (T4 item :  List.of(values) ) safeList.add(item);
@@ -92,7 +92,7 @@ public class Zipper3<T1, T2, T3> {
      * <p>All lists must have the same size to maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX3.addList(list4)
+     * streamX3.zipList(list4)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -101,7 +101,7 @@ public class Zipper3<T1, T2, T3> {
      * @return a {@code Zipper4<T1, T2, T3, T4>} representing the parallel lists
      * @throws IllegalArgumentException if the provided list size does not match existing lists
      */
-    public <T4> Zipper4<T1, T2, T3, T4> addList(List<T4> list) {
+    public <T4> Zipper4<T1, T2, T3, T4> zipList4(List<T4> list) {
         if (list.size() != size) {
             throw new IllegalArgumentException("List size mismatch");
         }
@@ -122,7 +122,7 @@ public class Zipper3<T1, T2, T3> {
      *
      * @param action a lambda that receives the index and the 3 elements at that index
      */
-    public void forEach(Consumer3<Integer, T1, T2, T3> action) {
+    public void forEach3(Consumer3<Integer, T1, T2, T3> action) {
         for (int i = 0; i < size; i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i));
         }
@@ -141,7 +141,7 @@ public class Zipper3<T1, T2, T3> {
      * @param <R> the result type of the mapping function
      * @return a list of mapped results
      */
-    public <R> List<R> map(Function3<Integer, T1, T2, T3, R> mapper) {
+    public <R> List<R> map3(Function3<Integer, T1, T2, T3, R> mapper) {
         List<R> results = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             results.add(mapper.apply(i, list1.get(i), list2.get(i), list3.get(i)));
@@ -160,7 +160,7 @@ public class Zipper3<T1, T2, T3> {
      * @param predicate the predicate to test each element group
      * @return a new {@code Zipper3<T1, T2, T3>} with filtered elements
      */
-    public Zipper3<T1, T2, T3> filter(Predicate3<Integer, T1, T2, T3> predicate) {
+    public Zipper3<T1, T2, T3> filter3(Predicate3<Integer, T1, T2, T3> predicate) {
         List<T1> filtered1 = new ArrayList<>();
         List<T2> filtered2 = new ArrayList<>();
         List<T3> filtered3 = new ArrayList<>();
@@ -185,7 +185,7 @@ public class Zipper3<T1, T2, T3> {
      * @param <R> the result type of the reduction
      * @return the reduced result
      */
-    public <R> R reduce(R identity, Accumulator3<Integer, T1, T2, T3, R> accumulator) {
+    public <R> R reduce3(R identity, Accumulator3<Integer, T1, T2, T3, R> accumulator) {
         R result = identity;
         for (int i = 0; i < size; i++) {
             result = accumulator.reduce(i, list1.get(i), list2.get(i), list3.get(i));
@@ -203,7 +203,7 @@ public class Zipper3<T1, T2, T3> {
      *
      * @return a list of {@code Tuple3<Integer, T1, T2, T3>} entries.
      */
-    public List<Tuple3<T1, T2, T3>> asTupleList() {
+    public List<Tuple3<T1, T2, T3>> asTupleList3() {
         List<Tuple3<T1, T2, T3>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             result.add(new Tuple3<>(i, list1.get(i), list2.get(i), list3.get(i)));
@@ -216,7 +216,7 @@ public class Zipper3<T1, T2, T3> {
      * @param predicate the predicate to apply to each element group and index
      * @return true if all match, false otherwise
      */
-    public boolean allMatch(Predicate3<Integer, T1, T2, T3> predicate) {
+    public boolean allMatch3(Predicate3<Integer, T1, T2, T3> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i))) return false;
         }
@@ -229,7 +229,7 @@ public class Zipper3<T1, T2, T3> {
      * @param predicate the predicate to test each group
      * @return true if any match, false otherwise
      */
-    public boolean anyMatch(Predicate3<Integer, T1, T2, T3> predicate) {
+    public boolean anyMatch3(Predicate3<Integer, T1, T2, T3> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i))) return true;
         }
@@ -242,7 +242,7 @@ public class Zipper3<T1, T2, T3> {
      * @param action the action to perform on each group
      * @return this stream for further chaining
      */
-    public Zipper3<T1, T2, T3> peek(Consumer3<Integer, T1, T2, T3> action) {
+    public Zipper3<T1, T2, T3> peek3(Consumer3<Integer, T1, T2, T3> action) {
         for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i));
         }

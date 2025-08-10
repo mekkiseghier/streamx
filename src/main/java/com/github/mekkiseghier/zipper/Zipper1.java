@@ -14,8 +14,8 @@ import java.util.List;
  * A type-safe stream-like utility for working with 1 parallel lists of values.
  * <p>
  * {@code Zipper1} enables index-aware, type-safe, and readable iteration over 1 lists in parallel.
- * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
- * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code zipList},
+ * and {@code zip}, while maintaining element alignment based on their positions (0-based index).
  * </p>
 
  * <p>
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * <pre>{@code
  * Zipper1<T1> stream =
- *     Zipper.addLists(list1);
+ *     Zipper.zipList(list1);
  *
  * stream.forEach((i, v1) -> {
  *     System.out.println(i + ": " + v1");
@@ -55,7 +55,7 @@ public class Zipper1 < T1 > {
      * maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX1.addElements(v1, v2, v3)
+     * streamX1.zip(v1, v2, v3)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -64,7 +64,7 @@ public class Zipper1 < T1 > {
      * @return a {@code Zipper2<T1, T2>} representing the parallel lists
      * @throws IllegalArgumentException if the number of elements does not match the existing size
      */
-    @SafeVarargs public final < T2 > Zipper2 < T1, T2 > addElements( T2... values ) {
+    @SafeVarargs public final < T2 > Zipper2 < T1, T2 > zip2( T2... values ) {
         return new Zipper2 <>( list1, List.of( values ) );
     }
     /**
@@ -74,7 +74,7 @@ public class Zipper1 < T1 > {
      * <p>All lists must have the same size to maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX1.addList(list)
+     * streamX1.zipList(list)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -83,7 +83,7 @@ public class Zipper1 < T1 > {
      * @return a {@code Zipper2<T1, T2>} representing the parallel lists
      * @throws IllegalArgumentException if the provided list size does not match existing lists
      */
-    public < T2 > Zipper2 < T1, T2 > addList( List < T2 > list ) {
+    public < T2 > Zipper2 < T1, T2 > zipList2( List < T2 > list ) {
         return new Zipper2 <>( list1, list );
     }
     /**
@@ -98,7 +98,7 @@ public class Zipper1 < T1 > {
      *
      * @param action a lambda that receives the index and the 1 element at that index
      */
-    public void forEach( Consumer1 < Integer, T1 > action ) {
+    public void forEach1( Consumer1 < Integer, T1 > action ) {
         int size = Collections.min( List.of( list1.size() ) );
         for ( int i = 0; i < size; i++ ) {
             action.accept( i, list1.get( i ) );
@@ -115,7 +115,7 @@ public class Zipper1 < T1 > {
      * @param predicate the predicate to test each element group
      * @return a new {@code Zipper1<T1>} with filtered elements
      */
-    public Zipper1 < T1 > filter( Predicate1 < Integer, T1 > predicate ) {
+    public Zipper1 < T1 > filter1( Predicate1 < Integer, T1 > predicate ) {
         List < T1 > filtered1 = new ArrayList <>();
         for ( int i = 0; i < list1.size(); i++ ) {
             if ( predicate.test( i, list1.get( i ) ) ) {
@@ -135,7 +135,7 @@ public class Zipper1 < T1 > {
      * @param <R> the result type of the reduction
      * @return the reduced result
      */
-    public < R > R reduce( R identity, Accumulator1 < Integer, T1, R > accumulator ) {
+    public < R > R reduce1( R identity, Accumulator1 < Integer, T1, R > accumulator ) {
         R result = identity;
         for ( int i = 0; i < list1.size(); i++ ) {
             result = accumulator.reduce( i, list1.get( i ) );
@@ -146,7 +146,7 @@ public class Zipper1 < T1 > {
 
 
 
-    public List < T1 > asList() {
+    public List < T1 > asList1() {
         return list1;
     }
 
@@ -177,7 +177,7 @@ public class Zipper1 < T1 > {
      * @param <R> the result type of the mapping function
      * @return a list of mapped results
      */
-    public < R > List < R > map( Function1 < Integer, T1, R > mapper ) {
+    public < R > List < R > map1( Function1 < Integer, T1, R > mapper ) {
         List < R > mapped1 = new ArrayList <>();
         for ( int i = 0; i < list1.size(); i++ ) {
             mapped1.add( mapper.apply( i, list1.get( i ) ) );
@@ -197,7 +197,7 @@ public class Zipper1 < T1 > {
      * @param predicate the predicate to apply to each element group and index
      * @return true if all match, false otherwise
      */
-    public boolean allMatch(Predicate1<Integer, T1> predicate) {
+    public boolean allMatch1(Predicate1<Integer, T1> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (!predicate.test(i, list1.get(i))) return false;
         }
@@ -210,7 +210,7 @@ public class Zipper1 < T1 > {
      * @param predicate the predicate to test each group
      * @return true if any match, false otherwise
      */
-    public boolean anyMatch(Predicate1<Integer, T1> predicate) {
+    public boolean anyMatch1(Predicate1<Integer, T1> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (predicate.test(i, list1.get(i))) return true;
         }
@@ -223,7 +223,7 @@ public class Zipper1 < T1 > {
      * @param action the action to perform on each group
      * @return this stream for further chaining
      */
-    public Zipper1<T1> peek(Consumer1<Integer, T1> action) {
+    public Zipper1<T1> peek1(Consumer1<Integer, T1> action) {
         for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i));
         }

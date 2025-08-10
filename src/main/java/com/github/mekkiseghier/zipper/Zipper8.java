@@ -14,8 +14,8 @@ import java.util.List;
  * A type-safe stream-like utility for working with 8 parallel lists of values.
  * <p>
  * {@code Zipper8} enables index-aware, type-safe, and readable iteration over 8 lists in parallel.
- * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
- * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code zipList},
+ * and {@code zip}, while maintaining element alignment based on their positions (0-based index).
  * </p>
 
  * <p>
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * <pre>{@code
  * Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> stream =
- *     Zipper.addLists(list1, list2, list3, list4, list5, list6, list7, list8);
+ *     Zipper.zipLists(list1, list2, list3, list4, list5, list6, list7, list8);
  *
  * stream.forEach((i, v1, v2, v3, v4, v5, v6, v7, v8) -> {
  *     System.out.println(i + ": " + v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5 + ", " + v6 + ", " + v7 + ", " + v8");
@@ -78,51 +78,44 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
         this.list8 = list8;
         this.size = expectedSize;
     }
+
     /**
-     * Adds a new array of elements to this {@link Zipper8}, producing a {@link Zipper9}
-     * that enables parallel index-aware iteration over 9 sequences.
+     * Adds a new array of elements to this {@link Zipper8}, producing a {@link ZipperRaw}
+     * that enables parallel index-aware iteration .
      *
      * <p>The number of provided elements must match the size of the existing lists to
      * maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX8.addElements(v1, v2, v3)
+     * streamX20.zip(v1, v2, v3)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
-     *
      * @param values the array of new elements to include
-     * @param <T9> the type of the new elements
-     * @return a {@code Zipper9<T1, T2, T3, T4, T5, T6, T7, T8, T9>} representing the parallel lists
+     * @return a {@code ZipperRaw} representing the parallel lists
      * @throws IllegalArgumentException if the number of elements does not match the existing size
      */
-     @SafeVarargs    public final <T9> Zipper9 <T1, T2, T3, T4, T5, T6, T7, T8, T9> addElements( T9... values) {
-        if (values.length != size) throw new IllegalArgumentException("List size mismatch");
-        List<T9> safeList =new ArrayList<>(values.length);
-        for (T9 item :  List.of(values) ) safeList.add(item);
-        return new Zipper9 <>(list1, list2, list3, list4, list5, list6, list7, list8, safeList);
+    @SafeVarargs public final ZipperRaw zip( Object... values ) {
+        if ( values.length != size ) {throw new IllegalArgumentException( "List size mismatch" );}
+        return new ZipperRaw( list1, list2, list3, list4, list5, list6, list7, list8, List.of( values ) );
     }
 
     /**
-     * Adds a new list to this {@link Zipper8}, producing a {@link Zipper9} that enables
-     * parallel index-aware iteration over 9 lists.
+     * Adds a new list to this {@link Zipper8}, producing a {@link ZipperRaw} that enables
+     * parallel index-aware iteration via index.
      *
      * <p>All lists must have the same size to maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX8.addList(list9)
+     * streamX20.zipList(list)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
-     *
      * @param list the new list to include in the stream
-     * @param <T9> the type of elements in the new list
-     * @return a {@code Zipper9<T1, T2, T3, T4, T5, T6, T7, T8, T9>} representing the parallel lists
+     * @return a {@code ZipperRaw} representing the parallel lists as raw type which needs explicit casting before usage
      * @throws IllegalArgumentException if the provided list size does not match existing lists
      */
-    public <T9> Zipper9<T1, T2, T3, T4, T5, T6, T7, T8, T9> addList(List<T9> list) {
-        if (list.size() != size) {
-            throw new IllegalArgumentException("List size mismatch");
-        }
-        return new Zipper9<>(list1, list2, list3, list4, list5, list6, list7, list8, list);
+    public ZipperRaw zipList( List list ) {
+        if ( list.size() != size ) {throw new IllegalArgumentException( "List size mismatch" );}
+        return new ZipperRaw( list1, list2, list3, list4, list5, list6, list7, list8,  list );
     }
 
     /**
@@ -137,7 +130,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      *
      * @param action a lambda that receives the index and the 8 elements at that index
      */
-    public void forEach(Consumer8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> action) {
+    public void forEach8(Consumer8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> action) {
         for (int i = 0; i < size; i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i));
         }
@@ -156,7 +149,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      * @param <R> the result type of the mapping function
      * @return a list of mapped results
      */
-    public <R> List<R> map(Function8<Integer, T1, T2, T3, T4, T5, T6, T7, T8, R> mapper) {
+    public <R> List<R> map8(Function8<Integer, T1, T2, T3, T4, T5, T6, T7, T8, R> mapper) {
         List<R> results = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             results.add(mapper.apply(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i)));
@@ -177,7 +170,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      * @return a new {@code Zipper8<T1, T2, T3, T4, T5, T6, T7, T8>} with filtered elements
      */
 
-    public Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> filter(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
+    public Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> filter8(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
         List<T1> filtered1 = new ArrayList<>();
         List<T2> filtered2 = new ArrayList<>();
         List<T3> filtered3 = new ArrayList<>();
@@ -212,7 +205,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      * @param <R> the result type of the reduction
      * @return the reduced result
      */
-    public <R> R reduce(R identity, Accumulator8<Integer, T1, T2, T3, T4, T5, T6, T7, T8, R> accumulator) {
+    public <R> R reduce8(R identity, Accumulator8<Integer, T1, T2, T3, T4, T5, T6, T7, T8, R> accumulator) {
         R result = identity;
         for (int i = 0; i < size; i++) {
             result = accumulator.reduce(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i));
@@ -230,7 +223,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      *
      * @return a list of {@code Tuple8<Integer, T1, T2, T3, T4, T5, T6, T7, T8>} entries.
      */
-    public List<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> asTupleList() {
+    public List<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> asTupleList8() {
         List<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             result.add(new Tuple8<>(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i)));
@@ -243,7 +236,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      * @param predicate the predicate to apply to each element group and index
      * @return true if all match, false otherwise
      */
-    public boolean allMatch(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
+    public boolean allMatch8(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i))) return false;
         }
@@ -256,7 +249,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      * @param predicate the predicate to test each group
      * @return true if any match, false otherwise
      */
-    public boolean anyMatch(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
+    public boolean anyMatch8(Predicate8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i))) return true;
         }
@@ -269,7 +262,7 @@ public class Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> {
      * @param action the action to perform on each group
      * @return this stream for further chaining
      */
-    public Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> peek(Consumer8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> action) {
+    public Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> peek8(Consumer8<Integer, T1, T2, T3, T4, T5, T6, T7, T8> action) {
         for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i), list8.get(i));
         }

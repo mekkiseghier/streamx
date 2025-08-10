@@ -46,7 +46,7 @@ public class ZipperRaw {
      * maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamXRaw.addElements(v1, v2, v3)
+     * streamXRaw.zip(v1, v2, v3)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -54,7 +54,7 @@ public class ZipperRaw {
      * @return a {@code ZipperRaw} representing the parallel lists
      * @throws IllegalArgumentException if the number of elements does not match the existing size
      */
-    public ZipperRaw addElements( Object... values ) {
+    public ZipperRaw zip( Object... values ) {
         if (values.length != lists.get( 0 ).size()) throw new IllegalArgumentException("List size mismatch");
         lists.add( List.of( values ) );
         return this;
@@ -66,7 +66,7 @@ public class ZipperRaw {
      * <p>All lists must have the same size to maintain index alignment.</p>
      *
      * <pre>{@code
-     * ZipperRaw.addList(list)
+     * ZipperRaw.zipList(list)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -74,7 +74,7 @@ public class ZipperRaw {
      * @return a {@code ZipperRaw} representing the parallel lists as raw type which needs explicit casting before usage
      * @throws IllegalArgumentException if the provided list size does not match existing lists
      */
-    public ZipperRaw addList( List < ? > list ) {
+    public ZipperRaw zipList( List < ? > list ) {
         if (list.size() != lists.get( 0 ).size()) throw new IllegalArgumentException("List size mismatch");
         lists.add( list );
         return this;

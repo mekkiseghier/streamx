@@ -13,8 +13,8 @@ import java.util.List;
  * A type-safe stream-like utility for working with 7 parallel lists of values.
  * <p>
  * {@code Zipper7} enables index-aware, type-safe, and readable iteration over 7 lists in parallel.
- * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code addList},
- * and {@code addElements}, while maintaining element alignment based on their positions (0-based index).
+ * It provides fluent operations like {@code forEach}, {@code map}, {@code filter}, {@code zipList},
+ * and {@code zip}, while maintaining element alignment based on their positions (0-based index).
  * </p>
 
  * <p>
@@ -28,7 +28,7 @@ import java.util.List;
  *
  * <pre>{@code
  * Zipper7<T1, T2, T3, T4, T5, T6, T7> stream =
- *     Zipper.addLists(list1, list2, list3, list4, list5, list6, list7);
+ *     Zipper.zipLists(list1, list2, list3, list4, list5, list6, list7);
  *
  * stream.forEach((i, v1, v2, v3, v4, v5, v6, v7) -> {
  *     System.out.println(i + ": " + v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5 + ", " + v6 + ", " + v7");
@@ -81,7 +81,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX7.addElements(v1, v2, v3)
+     * streamX7.zip(v1, v2, v3)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -90,7 +90,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @return a {@code Zipper8<T1, T2, T3, T4, T5, T6, T7, T8>} representing the parallel lists
      * @throws IllegalArgumentException if the number of elements does not match the existing size
      */
-     @SafeVarargs    public final <T8> Zipper8 <T1, T2, T3, T4, T5, T6, T7, T8> addElements( T8... values) {
+     @SafeVarargs    public final <T8> Zipper8 <T1, T2, T3, T4, T5, T6, T7, T8> zip8( T8... values) {
         if (values.length != size) throw new IllegalArgumentException("List size mismatch");
         List<T8> safeList =new ArrayList<>(values.length);
         for (T8 item :  List.of(values) ) safeList.add(item);
@@ -104,7 +104,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * <p>All lists must have the same size to maintain index alignment.</p>
      *
      * <pre>{@code
-     * streamX7.addList(list8)
+     * streamX7.zipList(list8)
      *        .forEach((i, ...) -> { ... });
      * }</pre>
      *
@@ -113,7 +113,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @return a {@code Zipper8<T1, T2, T3, T4, T5, T6, T7, T8>} representing the parallel lists
      * @throws IllegalArgumentException if the provided list size does not match existing lists
      */
-    public <T8> Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> addList(List<T8> list) {
+    public <T8> Zipper8<T1, T2, T3, T4, T5, T6, T7, T8> zipList8(List<T8> list) {
         if (list.size() != size) {
             throw new IllegalArgumentException("List size mismatch");
         }
@@ -132,7 +132,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      *
      * @param action a lambda that receives the index and the 7 elements at that index
      */
-    public void forEach(Consumer7<Integer, T1, T2, T3, T4, T5, T6, T7> action) {
+    public void forEach7(Consumer7<Integer, T1, T2, T3, T4, T5, T6, T7> action) {
         for (int i = 0; i < size; i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i));
         }
@@ -151,7 +151,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @param <R> the result type of the mapping function
      * @return a list of mapped results
      */
-    public <R> List<R> map(Function7<Integer, T1, T2, T3, T4, T5, T6, T7, R> mapper) {
+    public <R> List<R> map7(Function7<Integer, T1, T2, T3, T4, T5, T6, T7, R> mapper) {
         List<R> results = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             results.add(mapper.apply(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i)));
@@ -169,7 +169,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @param predicate the predicate to test each element group
      * @return a new {@code Zipper7<T1, T2, T3, T4, T5, T6, T7>} with filtered elements
      */
-    public Zipper7<T1, T2, T3, T4, T5, T6, T7> filter(Predicate7<Integer, T1, T2, T3, T4, T5, T6, T7> predicate) {
+    public Zipper7<T1, T2, T3, T4, T5, T6, T7> filter7(Predicate7<Integer, T1, T2, T3, T4, T5, T6, T7> predicate) {
         List<T1> filtered1 = new ArrayList<>();
         List<T2> filtered2 = new ArrayList<>();
         List<T3> filtered3 = new ArrayList<>();
@@ -202,7 +202,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @param <R> the result type of the reduction
      * @return the reduced result
      */
-    public <R> R reduce(R identity, Accumulator7<Integer, T1, T2, T3, T4, T5, T6, T7, R> accumulator) {
+    public <R> R reduce7(R identity, Accumulator7<Integer, T1, T2, T3, T4, T5, T6, T7, R> accumulator) {
         R result = identity;
         for (int i = 0; i < size; i++) {
             result = accumulator.reduce(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i));
@@ -220,7 +220,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      *
      * @return a list of {@code Tuple7<Integer, T1, T2, T3, T4, T5, T6, T7>} entries.
      */
-    public List<Tuple7<T1, T2, T3, T4, T5, T6, T7>> asTupleList() {
+    public List<Tuple7<T1, T2, T3, T4, T5, T6, T7>> asTupleList7() {
         List<Tuple7<T1, T2, T3, T4, T5, T6, T7>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             result.add(new Tuple7<>(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i)));
@@ -233,7 +233,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @param predicate the predicate to apply to each element group and index
      * @return true if all match, false otherwise
      */
-    public boolean allMatch(Predicate7<Integer, T1, T2, T3, T4, T5, T6, T7> predicate) {
+    public boolean allMatch7(Predicate7<Integer, T1, T2, T3, T4, T5, T6, T7> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (!predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i))) return false;
         }
@@ -246,7 +246,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @param predicate the predicate to test each group
      * @return true if any match, false otherwise
      */
-    public boolean anyMatch(Predicate7<Integer, T1, T2, T3, T4, T5, T6, T7> predicate) {
+    public boolean anyMatch7(Predicate7<Integer, T1, T2, T3, T4, T5, T6, T7> predicate) {
         for (int i = 0; i < list1.size(); i++) {
             if (predicate.test(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i))) return true;
         }
@@ -259,7 +259,7 @@ public class Zipper7<T1, T2, T3, T4, T5, T6, T7> {
      * @param action the action to perform on each group
      * @return this stream for further chaining
      */
-    public Zipper7<T1, T2, T3, T4, T5, T6, T7> peek(Consumer7<Integer, T1, T2, T3, T4, T5, T6, T7> action) {
+    public Zipper7<T1, T2, T3, T4, T5, T6, T7> peek7(Consumer7<Integer, T1, T2, T3, T4, T5, T6, T7> action) {
         for (int i = 0; i < list1.size(); i++) {
             action.accept(i, list1.get(i), list2.get(i), list3.get(i), list4.get(i), list5.get(i), list6.get(i), list7.get(i));
         }

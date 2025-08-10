@@ -1,5 +1,16 @@
 package com.github.mekkiseghier.zipper.tuples;
 
+/**
+ * A tuple containing an index and 8 values.
+ * @param <T1> type of the first element
+ * @param <T2> type of the second element
+ * @param <T3> type of the third element
+ * @param <T4> type of the fourth element
+ * @param <T5> type of the fifth element
+ * @param <T6> type of the sixth element
+ * @param <T7> type of the seventh element
+ * @param <T8> type of the eighth element
+ */
 public class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
     public final int index;
     public final T1 t1;
@@ -11,6 +22,18 @@ public class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
     public final T7 t7;
     public final T8 t8;
 
+    /**
+     * Creates a tuple with index and 8 values.
+     * @param index the position index
+     * @param t1 the first element
+     * @param t2 the second element
+     * @param t3 the third element
+     * @param t4 the fourth element
+     * @param t5 the fifth element
+     * @param t6 the sixth element
+     * @param t7 the seventh element
+     * @param t8 the eighth element
+     */
     public Tuple8(int index, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8) {
         this.index = index;
         this.t1 = t1;
@@ -23,13 +46,22 @@ public class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
         this.t8 = t8;
     }
 
+    /** @return the tuple's index */
     public int index() { return index; }
+    /** @return the first element */
     public T1 get_1st() { return t1; }
+    /** @return the second element */
     public T2 get_2nd() { return t2; }
+    /** @return the third element */
     public T3 get_3rd() { return t3; }
+    /** @return the fourth element */
     public T4 get_4th() { return t4; }
+    /** @return the fifth element */
     public T5 get_5th() { return t5; }
+    /** @return the sixth element */
     public T6 get_6th() { return t6; }
+    /** @return the seventh element */
     public T7 get_7th() { return t7; }
+    /** @return the eighth element */
     public T8 get_8th() { return t8; }
 }
