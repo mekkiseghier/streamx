@@ -1,6 +1,8 @@
 # Zipper
 
-**Zipper** is a Java utility library that enables **type-safe, index-aware parallel iteration** over multiple lists — up to 8 in parallel — with clean syntax, powerful functional interfaces, and zero external dependencies.
+**Zipper** is a Java utility library that enables **type-safe, index-aware parallel iteration** over multiple lists — up
+to 8 in parallel —
+with clean syntax, powerful functional interfaces, and zero external dependencies.
 
 > 🔧 Supports constructing and modifying multiple object instances in parallel  
 >  No reflection. No unsafe casts. Just fast, readable logic.
@@ -58,7 +60,12 @@ List < Integer > numbers = List.of( 41, 40, 35 );
 Zipper2 < String, Integer > zipper2 = Zipper.zip1( "Alice", "Bob", "Charlie" ).zipList2( numbers );
 // Dynamic Expansion To Support New Type!! 
         zipper2.filter2( ( index, v1, v2 ) -> v1.contains( "a" ) && v2 < 40 )
-        .forEach2( ( index, v1, v2 ) -> System.out.println( "found: " + index + ", name = " + v1 + ", age = " + v2 ) );
+        .
+
+forEach2( (index, v1, v2 ) ->
+        System.out.
+
+println( "found: "+index +", name = "+v1+", age = "+v2 ) );
 ```
 ---
 
@@ -70,10 +77,26 @@ List < String > names = List.of( "Jessica", "Bob", "Charlie" );
 List < Integer > ages = List.of( 41, 40, 35 );
 List < Boolean > online = List.of( false, true, true );
         Zipper.zipper3( names, ages, online )
-                .forEach3( ( index, name, age, isOnline ) -> System.out.println( ( index + 1 ) + ": " + name + " is " + age + " years old, online: " + isOnline ) );
+                .
+
+forEach3( (index, name, age, isOnline ) ->
+        System.out.
+
+println( (index +1 ) +": "+name +" is "+age +" years old, online: "+isOnline ));
 // (2) Combining varargs and a list
 List < Double > nums = List.of( 1.2, 3.2, 4.2 );
-        Zipper.zip1( "A", "B", "C" ).zip2( 1, 2, 3 ).zipList3( nums ).forEach3( ( i, a, b, c ) -> System.out.println( i + ": " + a + ", " + b + ", " + c ) );
+        Zipper.
+
+zip1( "A","B","C" ).
+
+zip2( 1,2,3 ).
+
+zipList3( nums ).
+
+forEach3( (i, a, b, c ) ->
+        System.out.
+
+println( i +": "+a+", "+b+", "+c ) );
 
 ```
 ---
@@ -87,7 +110,12 @@ List < Double > nums = List.of( 1.2, 3.2, 4.2 );
 List<Integer> ages = List.of(30, 25, 28);
 List<Boolean> active = List.of(true, false, true);
 Zipper3 < String, Integer, Boolean > zipper3 = new Zipper3 <>( names, ages, active );
-        zipper3.forEach3((i, name, age, isActive ) ->System.out.println( i +": "+name+" ("+age+") - active: "+isActive ));
+        zipper3.
+
+forEach3((i, name, age, isActive ) ->
+        System.out.
+
+println( i +": "+name+" ("+age+") - active: "+isActive ));
 ```
 
 ---
