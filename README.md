@@ -29,7 +29,8 @@ with clean syntax, powerful functional interfaces, and zero external dependencie
 import com.github.mekkiseghier.zipper.Zipper;
 
 List < Button > buttons = Zipper.zip1( "OK", "Cancel", "Open", "Save", "Close", "Edit" )
-        .zip2( Color.RED, Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.MAGENTA ).map2( ( i, text, color ) ->
+        .zip2( Color.RED, Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.MAGENTA ).
+                map2( ( i, text, color ) ->
           {
           Button b = new Button( text );
           b.setBackground( color );
