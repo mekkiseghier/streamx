@@ -26,47 +26,35 @@ with clean syntax, powerful functional interfaces, and zero external dependencie
 ### Implicitly
 
 ```java
-import com.github.mekkiseghier.zipper.Zipper;
 
 List < Button > buttons = Zipper.zip1( "OK", "Cancel", "Open", "Save", "Close", "Edit" )
         .zip2( Color.RED, Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.MAGENTA ).
-                map2( ( i, text, color ) ->
-          {
+                map2( ( i, text, color ) -> {
           Button b = new Button( text );
           b.setBackground( color );
           return b;
 //  Type-safe: values are checked at compile-time
           } );
-Zipper.
-
-zip1("A","B","C" ).
-
-zip2(10,20,30 ).
-
-zip3(true,false,true )
-    .
-
-forEach((i, str, num, flag ) ->System.out.
-
-println( i +": "+str+", "+num+", "+flag )
+Zipper.zip1("A","B","C" ).zip2(10,20,30 ).zip3(true,false,true )
+    .forEach((i, str, num, flag ) ->
+        System.out.println( i +": "+str+", "+num+", "+flag )
 //  Type-checked, no casting required
     );
+
 ```
 
 
 ### Explicitly
 
 ```java
+
 List < Integer > numbers = List.of( 41, 40, 35 );
 Zipper2 < String, Integer > zipper2 = Zipper.zip1( "Alice", "Bob", "Charlie" ).zipList2( numbers );
 // Dynamic Expansion To Support New Type!! 
         zipper2.filter2( ( index, v1, v2 ) -> v1.contains( "a" ) && v2 < 40 )
-        .
-
-forEach2( (index, v1, v2 ) ->
-        System.out.
-
-println( "found: "+index +", name = "+v1+", age = "+v2 ) );
+        .forEach2( (index, v1, v2 ) ->
+        System.out.println( "found: "+index +", name = "+v1+", age = "+v2 ) );
+        
 ```
 ---
 
@@ -74,30 +62,20 @@ println( "found: "+index +", name = "+v1+", age = "+v2 ) );
 
 ```java
         // (1) Constructing from multiple lists
+
 List < String > names = List.of( "Jessica", "Bob", "Charlie" );
 List < Integer > ages = List.of( 41, 40, 35 );
 List < Boolean > online = List.of( false, true, true );
         Zipper.zipper3( names, ages, online )
-                .
-
-forEach3( (index, name, age, isOnline ) ->
-        System.out.
-
-println( (index +1 ) +": "+name +" is "+age +" years old, online: "+isOnline ));
+                .forEach3( (index, name, age, isOnline ) ->
+        System.out.println( (index +1 ) +": "+name +" is "+age +" years old, online: "+isOnline ));
+        
 // (2) Combining varargs and a list
 List < Double > nums = List.of( 1.2, 3.2, 4.2 );
-        Zipper.
-
-zip1( "A","B","C" ).
-
-zip2( 1,2,3 ).
-
-zipList3( nums ).
-
-forEach3( (i, a, b, c ) ->
-        System.out.
-
-println( i +": "+a+", "+b+", "+c ) );
+        Zipper.zip1( "A","B","C" ).zip2( 1,2,3 ).zipList3( nums )
+.forEach3( (i, a, b, c ) ->
+        System.out.println( i +": "+a+", "+b+", "+c ) );
+        
 
 ```
 ---
@@ -111,12 +89,8 @@ println( i +": "+a+", "+b+", "+c ) );
 List<Integer> ages = List.of(30, 25, 28);
 List<Boolean> active = List.of(true, false, true);
 Zipper3 < String, Integer, Boolean > zipper3 = new Zipper3 <>( names, ages, active );
-        zipper3.
-
-forEach3((i, name, age, isActive ) ->
-        System.out.
-
-println( i +": "+name+" ("+age+") - active: "+isActive ));
+        zipper3.forEach3((i, name, age, isActive ) ->
+        System.out.println( i +": "+name+" ("+age+") - active: "+isActive ));
 ```
 
 ---
@@ -141,6 +115,7 @@ This library solves both, with fully typed and reusable interfaces.
 ###  Examples
 
 ```java
+
 @FunctionalInterface
 public interface Consumer4<I, T1, T2, T3, T4> {
     void accept(I index, T1 v1, T2 v2, T3 v3, T4 v4);
@@ -150,6 +125,7 @@ public interface Consumer4<I, T1, T2, T3, T4> {
 public interface Function5<I, T1, T2, T3, T4, T5, R> {
     R apply(I index, T1 v1, T2 v2, T3 v3, T4 v4, T5 v5);
 }
+
 ```
 
 ---
@@ -185,11 +161,13 @@ Add this to your `pom.xml` :
 <version>v1.0.7</version>
 </dependency>
 
+
 ```
 
 Or for Gradle:
 
 ```groovy
+
 groovy
 Copy
 Edit
@@ -200,6 +178,7 @@ repositories {
 dependencies {
   implementation 'com.github.mekkiseghier:zipper:v1.0.7'
 }
+
 ```
 ---
 
