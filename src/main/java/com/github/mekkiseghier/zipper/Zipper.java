@@ -28,7 +28,20 @@ import java.util.List;
  * @since 1.0
  */
 public class Zipper {
+/*    public static void main( String[] args ) {
+        List < String > names = List.of( "Jessica", "Bob", "Charlie" );
+        List < Integer > ages = List.of( 41, 40, 35 );
+        List < Boolean > online = List.of( false, true, true );
+        Zipper.zipper3( names, ages, online )
+                .forEach3( (index, name, age, isOnline ) ->
+                        System.out.println( (index +1 ) +": "+name +" is "+age +" years old, online: "+isOnline ));
 
+// (2) Combining varargs and a list
+        List < Double > nums = List.of( 1.2, 3.2, 4.2 );
+        Zipper.zip1( "A","B","C" ).zip2( 1,2,3 ).zipList3( nums )
+                .forEach3( (i, a, b, c ) ->
+                        System.out.println( i +": "+a+", "+b+", "+c ) );
+    }*/
     /**
      * Creates a {@link Zipper1} from given values.
      * @param values the elements to wrap in a stream

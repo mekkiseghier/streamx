@@ -6,7 +6,7 @@
 
     <groupId>com.github.mekkiseghier</groupId>
     <artifactId>zipper</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.9</version>
     <packaging>jar</packaging>
 
     <name>zipper</name>
@@ -41,11 +41,11 @@
     </properties>
 
     <dependencies>
-        <!-- Add your dependencies here -->
+        <!-- No dependencies -->
     </dependencies>
 
     <build>
-        <finalName>zipper-1.0.7</finalName> <!-- Ensures clean JAR name -->
+        <finalName>zipper-1.0.9</finalName>
         <plugins>
             <!-- Source JAR -->
             <plugin>
@@ -85,16 +85,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>9</release> <!-- Ensures modular compilation -->
+                    <release>9</release>
                 </configuration>
             </plugin>
 
-            <!-- JAR Manifest with Automatic-Module-Name -->
+            <!-- JAR Manifest with Automatic Module Name -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
-
                 <configuration>
                     <archive>
                         <manifestEntries>
